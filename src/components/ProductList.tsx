@@ -4,11 +4,6 @@ import {
   Paper,
   Pagination,
   Card,
-  AppBar,
-  Toolbar,
-  Typography,
-  Avatar,
-  TextField,
   FormControl,
   InputLabel,
   MenuItem,
@@ -19,68 +14,44 @@ import { useProducts } from "../hooks/UseProducts";
 import type { Product } from "../types/Product";
 import { ProductView } from "./ProductView";
 import { FiltersList } from "./FiltersList";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCartCheckoutSharp";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export function ProductList() {
-  const {
-    products,
-    loading,
-    error,
-    listProducts,
-    createProduct,
-    deleteProduct,
-    updateProduct,
-  } = useProducts();
+  const { products, loading, error, listProducts, createProduct } =
+    useProducts();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentSort, setCurrentSort] = useState("creationDate,desc");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page") || 1);
+  const currentSort = searchParams.get("sort") || "creationDate,desc";
   const pageSize: number = 12;
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
-    setCurrentPage(value);
-    listProducts(value - 1, pageSize, currentSort);
+    setSearchParams({
+      ...Object.fromEntries(searchParams),
+      page: value.toString(),
+    });
   };
 
   const handleSortChange = (event: SelectChangeEvent) => {
-    setCurrentSort(event.target.value as string);
-    listProducts(currentPage - 1, pageSize, event.target.value as string);
+    setSearchParams({
+      ...Object.fromEntries(searchParams),
+      sort: event.target.value,
+      page: "1",
+    });
   };
+
+  useEffect(() => {
+    listProducts(currentPage - 1, pageSize, currentSort);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, currentSort]);
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <ShoppingCartIcon sx={{ fontSize: 48, p: 0.5 }} />
-            <Typography variant="h4" component="div">
-              NIE ALLEGRO
-            </Typography>
-            <Card sx={{ p: 2, m: 4, flexGrow: 1 }}>
-              <TextField
-                label="Czego szukasz?"
-                variant="standard"
-                color="primary"
-                sx={{ width: "100%" }}
-              />
-            </Card>
-            <Avatar
-              sx={{
-                bgcolor: "white",
-                color: "primary.main",
-                fontSize: 36,
-                width: 56,
-                height: 56,
-              }}
-            >
-              A
-            </Avatar>
-          </Toolbar>
-        </AppBar>
-      </Box>
       <Grid container spacing={2} sx={{ p: 2 }}>
         <Grid size={3}>
           <FiltersList />

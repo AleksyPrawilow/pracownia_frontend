@@ -1,37 +1,24 @@
 import { useState } from "react";
 import type { Product } from "../types/Product";
-import type { Pageable } from "../types/Pageable";
 
-export function useProducts() {
+export function useProductDetails() {
   const baseurl: string = "http://localhost:8080/products/";
-  const [products, setProducts] = useState<Pageable<Product> | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchProducts(
-    page: number = 0,
-    pageSize: number = 12,
-    sort: string = "creationDate,desc",
-  ) {
+  async function fetchProductDetails(productId: string) {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetch(
-        baseurl +
-          "list?page=" +
-          page.toString() +
-          "&size=" +
-          pageSize.toString() +
-          "&sort=" +
-          sort,
-      );
+      const result = await fetch(baseurl + "find/" + productId);
       if (!result.ok) {
         console.log("Something went wrong");
         throw new Error("Failed to fetch products.");
       }
       const json = await result.json();
       console.log(json);
-      setProducts(json);
+      setProduct(json);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -40,13 +27,16 @@ export function useProducts() {
     }
   }
 
-  async function createProduct(product: Product) {}
+  async function deleteProduct(productId: string) {}
+
+  async function updateProduct(modifiedProduct: Product) {}
 
   return {
-    products,
+    product,
     loading,
     error,
-    listProducts: fetchProducts,
-    createProduct: createProduct,
+    fetchProduct: fetchProductDetails,
+    deleteProduct: deleteProduct,
+    updateProduct: updateProduct,
   };
 }

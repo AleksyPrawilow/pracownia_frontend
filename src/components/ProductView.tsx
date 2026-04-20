@@ -1,12 +1,12 @@
 import {
   Card,
   Skeleton,
-  CardMedia,
   Typography,
   CardContent,
   CardActionArea,
 } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Prop {
   id: string;
@@ -28,6 +28,8 @@ export function ProductView({
   price,
 }: Prop) {
   const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <Card
       sx={{
@@ -39,7 +41,12 @@ export function ProductView({
         },
       }}
     >
-      <CardActionArea onClick={() => {}} disableRipple>
+      <CardActionArea
+        onClick={() => {
+          navigate(`/products/${id}`);
+        }}
+        disableRipple
+      >
         <CardContent>
           <div style={{ position: "relative", height: 300 }}>
             {!loaded && (
