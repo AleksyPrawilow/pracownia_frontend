@@ -1,13 +1,15 @@
 import { Card, Grid, Stack, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useProductDetails } from "../hooks/UseProductDetails";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProductDetailsAndPurchasePanel } from "./ProductDetailsAndPurchasePanel";
 import StarIcon from "@mui/icons-material/Star";
 import { ProductReviewSummary } from "./ProductReviewSummary";
+import { ProductReviewsDrawer } from "./ProductReviewsDrawer";
 
 export function ProductDetails() {
   const pageParams = useParams();
+  const [reviewsOpened, setReviewsOpened] = useState(false);
   const id = pageParams.id;
   const {
     product,
@@ -18,6 +20,10 @@ export function ProductDetails() {
     deleteProduct,
   } = useProductDetails();
 
+  const toggleDrawer = (value: boolean) => {
+    setReviewsOpened(value);
+  };
+
   useEffect(() => {
     if (id != null) {
       fetchProduct(id);
@@ -27,6 +33,15 @@ export function ProductDetails() {
 
   return (
     <>
+      {!loading && error === null && product != null && (
+        <ProductReviewsDrawer
+          title={product.title}
+          imageUrl={product.imageUrl}
+          open={reviewsOpened}
+          toggleDrawer={toggleDrawer}
+          id={product?.id}
+        />
+      )}
       <Grid container spacing={2} sx={{ p: 2 }}>
         {!loading && error === null && product != null && (
           <>
@@ -47,10 +62,19 @@ export function ProductDetails() {
                   </Typography>
                   <Stack
                     direction="row"
-                    sx={{ display: "flex", justifyContent: "end" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "end",
+                      paddingBottom: 2,
+                    }}
                   >
                     <StarIcon sx={{ color: "gold" }} />
-                    <Typography sx={{ cursor: "pointer" }}>
+                    <Typography
+                      onClick={() => {
+                        toggleDrawer(true);
+                      }}
+                      sx={{ cursor: "pointer" }}
+                    >
                       4,75 (5 ocen)
                     </Typography>
                   </Stack>
@@ -80,7 +104,7 @@ export function ProductDetails() {
               />
             </Grid>
 
-            <ProductReviewSummary />
+            <ProductReviewSummary toggleDrawer={toggleDrawer} />
           </>
         )}
       </Grid>

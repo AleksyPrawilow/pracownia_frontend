@@ -13,7 +13,11 @@ import CheckMark from "@mui/icons-material/Check";
 import StarMultiple from "@mui/icons-material/AutoAwesome";
 import StarIcon from "@mui/icons-material/Star";
 
-export function ProductReviewSummary() {
+interface Prop {
+  toggleDrawer: (value: boolean) => void;
+}
+
+export function ProductReviewSummary({ toggleDrawer }: Prop) {
   return (
     <>
       <Grid size={8}>
@@ -27,6 +31,9 @@ export function ProductReviewSummary() {
           <Stack direction="column" sx={{ p: 2, width: "100%" }}>
             <Stack
               direction="row"
+              onClick={() => {
+                toggleDrawer(true);
+              }}
               sx={{ cursor: "pointer", justifyContent: "space-between" }}
             >
               <Typography variant="h5">Opinie o produkcie</Typography>
@@ -151,11 +158,14 @@ export function ProductReviewSummary() {
                       noWrap
                       sx={{ fontWeight: 300 }}
                     >
-                      22 kwietnia 2026 od Aleksy Prawiłow
+                      22 kwietnia 2026 | Aleksy Prawiłow
                     </Typography>
                     <Typography
                       variant="caption"
                       noWrap
+                      onClick={() => {
+                        toggleDrawer(true);
+                      }}
                       sx={{
                         cursor: "pointer",
                         color: "teal",
@@ -179,7 +189,7 @@ export function ProductReviewSummary() {
                   color: "green",
                 }}
               />
-              <Typography variant="caption">
+              <Typography variant="caption" sx={{ fontWeight: 300 }}>
                 Wszystkie opinie są potwierdzone zakupem
               </Typography>
             </Stack>

@@ -35,7 +35,7 @@ export function ProductDetailsAndPurchasePanel({
               Osoba fizyczna
             </Typography>
             <Typography variant="caption" sx={{ fontWeight: 300 }}>
-              Dodano {creationDate}
+              Dodano {new Date(creationDate).toLocaleString("pl-PL")}
             </Typography>
             <Box sx={{ height: 16 }} />
             <Divider />
